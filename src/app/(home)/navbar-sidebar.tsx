@@ -33,7 +33,7 @@ export const NavbarSidebar = ({ items, open, onOpenChange }: Props) => {
               key={item.href}
               href={item.href}
               className="flex items-center w-full p-4 text-left text-base font-medium hover:bg-black hover:text-white"
-              onChange={() => onOpenChange(false)}
+              onClick={() => onOpenChange(false)}
             >
               {item.children}
             </Link>

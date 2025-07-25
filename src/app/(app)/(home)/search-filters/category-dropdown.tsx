@@ -29,12 +29,35 @@ export const CategoryDropdown = ({
 
   const onMouseLeave = () => setIsOpen(false);
 
+  const toggleDropdown = () => {
+    if (category.subcategories?.length) {
+      setIsOpen(!isOpen);
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape" && isOpen) {
+      setIsOpen(false);
+      e.preventDefault();
+    } else if (
+      (e.key === "Enter" || e.key === " ") &&
+      category.subcategories?.length
+    ) {
+      setIsOpen(!isOpen);
+      e.preventDefault();
+    }
+  };
+
   return (
     <div
       className="relative"
       ref={dropdownRef}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      // CODERABBIT: To work well on touch devices too
+      onClick={toggleDropdown}
+      // CODERABBIT: keyboard accessibility
+      onKeyDown={handleKeyDown}
     >
       <div className="relative">
         <Button
@@ -43,6 +66,8 @@ export const CategoryDropdown = ({
             "h-11 px-4 bg-transparent border-transparent rounded-full hover:bg-white hover:border-primary text-black",
             isActive && !isNavigationHovered && "bg-white border-primary"
           )}
+          aria-expanded={isOpen}
+          aria-haspopup={true}
         >
           {category.name}
         </Button>

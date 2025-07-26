@@ -1,17 +1,17 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
+import { useTRPC } from "@/trpc/client";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CategoryDropdown } from "./category-dropdown";
-import { CustomCategory } from "../types";
-import { cn } from "@/lib/utils";
 import { CategoriesSidebar } from "./categories-sidebar";
 
-interface Props {
-  data: CustomCategory[];
-}
+export const Categories = () => {
+  const trpc = useTRPC();
+  const { data } = useSuspenseQuery(trpc.categories.getMany.queryOptions());
 
-export const Categories = ({ data }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
   const viewAllRef = useRef<HTMLDivElement>(null);

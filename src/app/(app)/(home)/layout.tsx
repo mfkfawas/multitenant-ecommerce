@@ -1,45 +1,25 @@
-import { PropsWithChildren } from "react";
-import { getPayload } from "payload";
-import configPromise from "@payload-config";
+import { PropsWithChildren, Suspense } from "react";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
+import { getQueryClient, trpc } from "@/trpc/server";
 import { Navbar } from "./navbar";
 import { Footer } from "./footer";
-import { SearchFilters } from "./search-filters";
-import { Category } from "@/payload-types";
-import { CustomCategory } from "./types";
+import { SearchFilters, SearchFiltersSkeleton } from "./search-filters";
 
 export default async function Layout({ children }: PropsWithChildren) {
-  const payload = await getPayload({
-    config: configPromise,
-  });
-
-  const data = await payload.find({
-    collection: "categories",
-    // depth: 0, NOTE: just populate subcategories ID
-    depth: 1, // NOTE: populate entire subcategories field. we dont need to specify it explicitly but for edu purpose let me keep it here. Also subcategories.[0] will be type of "Category"
-    pagination: false, // NOTE: we dont have lot of categories and we need to load all categories.
-    where: {
-      parent: {
-        exists: false,
-      },
-    },
-    sort: "name",
-  });
-
-  const formattedData: CustomCategory[] = data.docs.map((doc) => ({
-    ...doc,
-    subcategories: (doc.subcategories?.docs ?? []).map((doc) => ({
-      // Because of "depth: 1" we are confident "doc" will be a type of Category
-      ...(doc as Category),
-      // override as we are not going more than 2 level deep.
-      subcategories: undefined,
-    })),
-  }));
+  const queryClient = getQueryClient();
+  void queryClient.prefetchQuery(trpc.categories.getMany.queryOptions());
 
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <SearchFilters data={formattedData} />
+
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Suspense fallback={<SearchFiltersSkeleton />}>
+          <SearchFilters />
+        </Suspense>
+      </HydrationBoundary>
+
       <div className="flex-1 bg-[#F4F4F0]">{children}</div>
       <Footer />
     </div>

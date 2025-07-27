@@ -26,6 +26,8 @@ export const categoriesRouter = createTRPCRouter({
       })),
     }));
 
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
+
     return formattedData;
   }),
 });

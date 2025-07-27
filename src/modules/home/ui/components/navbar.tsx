@@ -1,15 +1,16 @@
 "use client";
-import { ReactNode, useState } from "react";
-import { Poppins } from "next/font/google";
 import Link from "next/link";
+import { MenuIcon } from "lucide-react";
+import { Poppins } from "next/font/google";
+import { ReactNode, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { MenuIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { NavbarSidebar } from "./navbar-sidebar";
 import { useTRPC } from "@/trpc/client";
+import { Button } from "@/components/ui/button";
+
+import { NavbarSidebar } from "./navbar-sidebar";
 
 const poppins = Poppins({
   subsets: ["latin"],

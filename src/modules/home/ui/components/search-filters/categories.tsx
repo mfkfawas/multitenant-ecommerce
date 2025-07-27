@@ -1,17 +1,19 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { useTRPC } from "@/trpc/client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+
 import { CategoryDropdown } from "./category-dropdown";
 import { CategoriesSidebar } from "./categories-sidebar";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 
-export const Categories = () => {
-  const trpc = useTRPC();
-  const { data } = useSuspenseQuery(trpc.categories.getMany.queryOptions());
+interface Props {
+  data: CategoriesGetManyOutput;
+  activeCategory: string;
+}
 
+export const Categories = ({ data, activeCategory }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
   const viewAllRef = useRef<HTMLDivElement>(null);
@@ -20,7 +22,6 @@ export const Categories = () => {
   const [isAnyHovered, setIsAnyHovered] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const activeCategory = "all";
   const activeCategoryIndex = data.findIndex(
     (category) => category.slug === activeCategory
   );
@@ -94,6 +95,7 @@ export const Categories = () => {
 
         <div ref={viewAllRef} className="shrink-0">
           <Button
+            variant="elevated"
             className={cn(
               "h-11 px-4 bg-transparent border-transparent rounded-full hover:bg-white hover:border-primary text-black",
               isActiveCategoryHidden &&
@@ -107,11 +109,7 @@ export const Categories = () => {
         </div>
       </div>
 
-      <CategoriesSidebar
-        data={data}
-        open={isSidebarOpen}
-        onOpenChange={setIsSidebarOpen}
-      />
+      <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
     </div>
   );
 };

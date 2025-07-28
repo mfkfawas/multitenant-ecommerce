@@ -35,21 +35,32 @@ const ProductFilter = ({ title, className, children }: ProductFilterProps) => {
 export const ProductFilters = () => {
   const [filters, setFilters] = useProductFilters();
 
+  const hasAnyFilters = !!Object.values(filters).some(Boolean);
+
   const onChange = (key: keyof typeof filters, value: unknown) => {
     setFilters({ ...filters, [key]: value });
   };
+
+  // setting `null` will set the `filters` value to their corr defaultValue
+  const onClear = () =>
+    setFilters({
+      minPrice: null,
+      maxPrice: null,
+    });
 
   return (
     <div className="border rounded-md bg-white">
       <div className="p-4 border-b flex justify-between items-center">
         <p className="font-medium">Filters</p>
-        <button
-          className="underline cursor-pointer"
-          onClick={() => {}}
-          type="button"
-        >
-          Clear
-        </button>
+        {hasAnyFilters && (
+          <button
+            className="underline cursor-pointer"
+            onClick={onClear}
+            type="button"
+          >
+            Clear
+          </button>
+        )}
       </div>
 
       <ProductFilter title="price">

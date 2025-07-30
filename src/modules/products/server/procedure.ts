@@ -1,8 +1,9 @@
 import z from "zod";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import type { Sort, Where } from "payload";
-import { Category } from "@/payload-types";
+import { Category, Media } from "@/payload-types";
 import { sortValues } from "../search-params";
+import { DEFAULT_LIMIT } from "@/contsants";
 
 export const productsRouter = createTRPCRouter({
   getMany: baseProcedure
@@ -13,6 +14,8 @@ export const productsRouter = createTRPCRouter({
         maxPrice: z.string().nullable().optional(),
         tags: z.array(z.string()).nullable().optional(),
         sort: z.enum(sortValues).nullable().optional(),
+        cursor: z.number().default(1),
+        limit: z.number().default(DEFAULT_LIMIT),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -95,11 +98,20 @@ export const productsRouter = createTRPCRouter({
 
       const data = await ctx.db.find({
         collection: "products",
-        depth: 1, // NOTE: populate 'category' and 'images'  // depth: 0, NOTE: just populate sub ID
+        depth: 1, // NOTE: populate 'category' and 'image'  // depth: 0, NOTE: just populate sub ID
         where,
         sort,
+        page: input.cursor,
+        limit: input.limit,
       });
 
-      return data;
+      // the above `depth` doesnt infer the types to the subs, so lets properly assign the type of the image
+      return {
+        ...data,
+        docs: data.docs.map((doc) => ({
+          ...doc,
+          image: doc.image as Media | null,
+        })),
+      };
     }),
 });

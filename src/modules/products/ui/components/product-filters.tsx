@@ -5,6 +5,7 @@ import { ChevronDownIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
 import { PriceFilter } from "./price-filter";
 import { useProductFilters } from "../../hooks/use-product-filters";
+import { TagsFilter } from "./tags-filter";
 
 interface ProductFilterProps {
   title: string;
@@ -35,17 +36,25 @@ const ProductFilter = ({ title, className, children }: ProductFilterProps) => {
 export const ProductFilters = () => {
   const [filters, setFilters] = useProductFilters();
 
-  const hasAnyFilters = !!Object.values(filters).some(Boolean);
+  const hasAnyFilters = Object.entries(filters)
+    .map(([key, val]) => {
+      // neglect sort
+      if (key === "sort") return false;
+      if (key === "tags") return val.length;
+      else return val;
+    })
+    .some(Boolean);
 
   const onChange = (key: keyof typeof filters, value: unknown) => {
-    setFilters({ ...filters, [key]: value });
+    setFilters({ [key]: value });
   };
 
-  // setting `null` will set the `filters` value to their corr defaultValue
+  // NOTE: setting `null` will set the `filters` value to their corr defaultValue by nuqs
   const onClear = () =>
     setFilters({
       minPrice: null,
       maxPrice: null,
+      tags: [],
     });
 
   return (
@@ -69,6 +78,13 @@ export const ProductFilters = () => {
           maxPrice={filters.maxPrice}
           onMinPriceChange={(value) => onChange("minPrice", value)}
           onMaxPriceChange={(value) => onChange("maxPrice", value)}
+        />
+      </ProductFilter>
+
+      <ProductFilter title="tags" className="border-b-0">
+        <TagsFilter
+          value={filters.tags}
+          onChange={(value) => onChange("tags", value)}
         />
       </ProductFilter>
     </div>

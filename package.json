@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "generate:types": "payload generate:types",
+    "generate:importmap": "payload generate:importmap",
     "db:fresh": "payload migrate:fresh",
     "db:seed": "bun run src/seed.ts"
   },
@@ -17,6 +18,7 @@
     "@payloadcms/db-mongodb": "^3.48.0",
     "@payloadcms/next": "^3.48.0",
     "@payloadcms/payload-cloud": "^3.48.0",
+    "@payloadcms/plugin-multi-tenant": "3.49.1",
     "@payloadcms/richtext-lexical": "^3.48.0",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",

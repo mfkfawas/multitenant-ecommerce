@@ -20,8 +20,6 @@ export const CategoryDropdown = ({
   isNavigationHovered,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const { getDropdownPosition } = useDropdownPosition(dropdownRef);
 
   const onMouseEnter = () => {
     if (category.subcategories) {
@@ -53,7 +51,6 @@ export const CategoryDropdown = ({
   return (
     <div
       className="relative"
-      ref={dropdownRef}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       // CODERABBIT: To work well on touch devices too
@@ -88,11 +85,7 @@ export const CategoryDropdown = ({
         )}
       </div>
 
-      <SubcategoryMenu
-        category={category}
-        isOpen={isOpen}
-        position={getDropdownPosition()}
-      />
+      <SubcategoryMenu category={category} isOpen={isOpen} />
     </div>
   );
 };

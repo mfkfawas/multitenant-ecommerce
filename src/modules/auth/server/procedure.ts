@@ -34,12 +34,23 @@ export const authRouter = createTRPCRouter({
           message: "Username already taken",
         });
 
+      const tenant = await ctx.db.create({
+        collection: "tenants",
+        data: {
+          name: input.username,
+          slug: input.username,
+          stripeAccountId: "test",
+        },
+      });
+
       await ctx.db.create({
         collection: "users",
         data: {
           email: input.email,
           username: input.username,
           password: input.password, // This will be hashed by payload
+          // It has to be an array as the multi tenant plugin allows a user to own multiple tenant(store) at a time. But for simplicity we allow one user for one tenant.
+          tenants: [{ tenant: tenant.id }],
         },
       });
 

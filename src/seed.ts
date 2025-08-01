@@ -142,6 +142,27 @@ const seed = async () => {
     config: configPromise,
   });
 
+  // const adminTenant = await payload.create({
+  //   collection: "tenants",
+  //   data: {
+  //     email: "admin@demo.com",
+  //     password: "demo",
+  //     roles: ["super-admin"],
+  //     username: "admin",
+  //   },
+  // });
+
+  // create admin user
+  await payload.create({
+    collection: "users",
+    data: {
+      email: "admin@demo.com",
+      password: "demo",
+      roles: ["super-admin"],
+      username: "admin",
+    },
+  });
+
   for (const category of categories) {
     const parentCategory = await payload.create({
       collection: "categories",

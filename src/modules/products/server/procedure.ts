@@ -1,7 +1,7 @@
 import z from "zod";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import type { Sort, Where } from "payload";
-import { Category, Media } from "@/payload-types";
+import { Category, Media, Tenant } from "@/payload-types";
 import { sortValues } from "../search-params";
 import { DEFAULT_LIMIT } from "@/contsants";
 
@@ -98,7 +98,8 @@ export const productsRouter = createTRPCRouter({
 
       const data = await ctx.db.find({
         collection: "products",
-        depth: 1, // NOTE: populate 'category' and 'image'  // depth: 0, NOTE: just populate sub ID
+        //   depth: 1,  NOTE: populate 'category', 'image', 'tenant'  // depth: 0, NOTE: just populate sub ID--- payload's defauly depth is 2
+        depth: 2, // NOTE: populate 'category', 'image', 'tenant' and tenant.image (2 step deep for reference) --- default - but we explicitly set for edu
         where,
         sort,
         page: input.cursor,
@@ -111,6 +112,7 @@ export const productsRouter = createTRPCRouter({
         docs: data.docs.map((doc) => ({
           ...doc,
           image: doc.image as Media | null,
+          tenant: doc.tenant as Tenant & { image: Media | null },
         })),
       };
     }),

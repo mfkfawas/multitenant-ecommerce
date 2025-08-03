@@ -48,8 +48,8 @@ export const ProductList = ({ category }: Props) => {
               name={product.name}
               imageUrl={product.image?.url}
               price={product.price}
-              authorUsername="Fawaz"
-              authorImageUrl={undefined}
+              authorUsername={product.tenant?.name}
+              authorImageUrl={product.tenant?.image?.url}
               reviewCount={3}
               reviewRating={3}
             />

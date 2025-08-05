@@ -1,13 +1,16 @@
-import { StarIcon } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
+import { MouseEvent } from "react";
+import { StarIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { generateTenantURL } from "@/lib/utils";
 
 interface ProductCardProps {
   id: string;
   name: string;
   imageUrl?: string | null;
-  authorUsername: string;
-  authorImageUrl?: string | null;
+  tenantSlug: string;
+  tenantImageUrl?: string | null;
   reviewRating: number;
   reviewCount: number;
   price: number;
@@ -17,14 +20,23 @@ export const ProductCard = ({
   id,
   name,
   imageUrl,
-  authorUsername,
-  authorImageUrl,
+  tenantSlug,
+  tenantImageUrl,
   reviewRating,
   reviewCount,
   price,
 }: ProductCardProps) => {
+  const router = useRouter();
+
+  const handleClick = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    router.push(generateTenantURL(tenantSlug));
+  };
+
   return (
-    <Link href={`:${id}`}>
+    <Link prefetch href={`:${id}`}>
       <div className="h-full bg-white border rounded-md flex flex-col overflow-hidden hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[4px] hover:-translate-y-[4px] transition-all">
         <div className="relative aspect-square">
           <Image
@@ -38,21 +50,17 @@ export const ProductCard = ({
         <div className="p-4 border-y flex flex-col gap-3 flex-1">
           <h2 className="text-lg font-medium line-clamp-4">{name}</h2>
 
-          {/* TODO: Redirect to Use shop */}
-          <div
-            className="flex items-center gap-2 cursor-pointer"
-            onClick={() => {}}
-          >
-            {authorImageUrl && (
+          <div className="flex items-center gap-2" onClick={handleClick}>
+            {tenantImageUrl && (
               <Image
-                src={authorImageUrl}
-                alt={authorUsername}
-                height={16}
+                alt={tenantSlug}
+                src={tenantImageUrl}
                 width={16}
+                height={16}
                 className="rounded-full border shrink-0 size-[16px]"
               />
             )}
-            <p className="text-sm underline font-medium">{authorUsername}</p>
+            <p className="text-sm underline font-medium">{tenantSlug}</p>
           </div>
 
           {!!reviewCount && (

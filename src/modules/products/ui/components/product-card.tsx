@@ -3,7 +3,7 @@ import Image from "next/image";
 import { MouseEvent } from "react";
 import { StarIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { generateTenantURL } from "@/lib/utils";
+import { formatCurrency, generateTenantURL } from "@/lib/utils";
 
 interface ProductCardProps {
   id: string;
@@ -36,7 +36,7 @@ export const ProductCard = ({
   };
 
   return (
-    <Link prefetch href={`:${id}`}>
+    <Link prefetch href={`${generateTenantURL(tenantSlug)}/products/${id}`}>
       <div className="h-full bg-white border rounded-md flex flex-col overflow-hidden hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[4px] hover:-translate-y-[4px] transition-all">
         <div className="relative aspect-square">
           <Image
@@ -75,11 +75,7 @@ export const ProductCard = ({
           <div className="p-4">
             <div className="relative px-2 py-1 border bg-pink-400 w-fit">
               <div className="text-sm font-medium">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                  maximumFractionDigits: 0,
-                }).format(Number(price))}
+                {formatCurrency(price)}
               </div>
             </div>
           </div>

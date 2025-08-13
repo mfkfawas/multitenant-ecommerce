@@ -15,15 +15,17 @@ import { Progress } from "@/components/ui/progress";
 import { StarRating } from "@/components/star-rating";
 import { formatCurrency, generateTenantURL } from "@/lib/utils";
 
-// const CartButton = dynamic(
-//   () => import("../components/cart-button").then(
-//     (mod) => mod.CartButton,
-//   ),
-//   {
-//     ssr: false,
-//     loading: () => <Button disabled className="flex-1 bg-pink-400">Add to cart</Button>
-//   },
-// );
+// NOTE: Solution for hydration error. Now, it will not be rendered on the server. Actually, Inside the CartButton.tsx, we are using zustand state that stored in the localStorge.
+const CartButton = dynamic(
+  () => import("../components/cart-button").then(
+    (mod) => mod.CartButton,
+  ),
+  {
+    ssr: false,
+    // NOTE: This is a skeleton for the cart button. But dont export from CartButton.tsx as we usually do. Because now its dynamic.
+    loading: () => <Button disabled className="flex-1 bg-pink-400">Add to cart</Button>
+  },
+);
 
 interface ProductViewProps {
   productId: string;
@@ -120,12 +122,11 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
             <div className="border-t lg:border-t-0 lg:border-l h-full">
               <div className="flex flex-col gap-4 p-6 border-b">
                 <div className="flex flex-row items-center gap-2">
-                  {/* <CartButton
-                    isPurchased={data.isPurchased}
+                  <CartButton
+                    isPurchased={false}
                     productId={productId}
                     tenantSlug={tenantSlug}
-                  /> */}
-                  <Button variant='elevated' className="flex-1 bg-pink-400">Add to cart</Button>
+                  />
                   <Button
                     className="size-12"
                     variant="elevated"

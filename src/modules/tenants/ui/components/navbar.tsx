@@ -9,21 +9,22 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { generateTenantURL } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+// import { CheckoutButton } from "@/modules/checkout/ui/components/checkout-button";
 
-// const CheckoutButton = dynamic(
-//   () =>
-//     import("@/modules/checkout/ui/components/checkout-button").then(
-//       (mod) => mod.CheckoutButton
-//     ),
-//   {
-//     ssr: false,
-//     loading: () => (
-//       <Button disabled className="bg-white">
-//         <ShoppingCartIcon className="text-black" />
-//       </Button>
-//     ),
-//   }
-// );
+const CheckoutButton = dynamic(
+  () =>
+    import("@/modules/checkout/ui/components/checkout-button").then(
+      (mod) => mod.CheckoutButton
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <Button disabled className="bg-white">
+        <ShoppingCartIcon className="text-black" />
+      </Button>
+    ),
+  }
+);
 
 interface Props {
   slug: string;
@@ -51,7 +52,7 @@ export const Navbar = ({ slug }: Props) => {
           )}
           <p className="text-xl">{data.name}</p>
         </Link>
-        {/*  <CheckoutButton hideIfEmpty tenantSlug={slug} /> */}
+         <CheckoutButton hideIfEmpty tenantSlug={slug} />
       </div>
     </nav>
   );
